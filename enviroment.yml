@@ -1,0 +1,10 @@
+
+name: PyCircularStats
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - scipy
+  - matplotlib
+  - python=3.6.9
+  - pyqt
