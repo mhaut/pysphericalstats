@@ -31,7 +31,7 @@ def main():
     modules = pySfileIO.getColumnAsArray(0, dat)
 
 
-
+    # estas en math.py
     n_elements = ArithmeticUtil.number_of_elements(modules)
     min_value = ArithmeticUtil.min_value(modules)
     max_value = ArithmeticUtil.max_value(modules)
@@ -63,8 +63,9 @@ def main():
     print("  KURTOSIS COEFFICIENT          =", ca)
 
     coordinates = (
-        fileManager.getColumnAsArray(3, dat), fileManager.getColumnAsArray(4, dat), fileManager.getColumnAsArray(5, dat))
+        pySfileIO.getColumnAsArray(3, dat), pySfileIO.getColumnAsArray(4, dat), pySfileIO.getColumnAsArray(5, dat))
 
+    # estas en math.py
     vm_direction   = angleStatisticsManager.mean_direction(coordinates)
     vm_module      = angleStatisticsManager.mean_module(coordinates)
     unit_incr      = angleStatisticsManager.real_mod_to_unit_mod(coordinates)
@@ -92,6 +93,7 @@ def main():
     print("  CONCENTRATION PARAMETER   =", conc_parameter)
     print("  SPHERICAL STANDARD ERROR  =", sphericalErr)
 
+    # estas en draw.py
     moduleAngleGraph.draw_module_angle_distrib(dat)
     densityGraph.draw_density_graph(dat)
     vectorGraph.draw_vector_graph(dat)
