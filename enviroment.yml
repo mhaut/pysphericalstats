@@ -1,5 +1,5 @@
 
-name: PysphericalStats
+name: PySphericalStats
 channels:
   - defaults
 dependencies:
