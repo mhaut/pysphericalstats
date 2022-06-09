@@ -1,8 +1,10 @@
 ## PySphericalStats: Spherical Statistics in Python
 
 <p align="center">
-<img src="https://github.com/mhaut/pysphericalstats/blob/master/images/pyspherstats.png" width="400">
+<img src="https://github.com/mhaut/pysphericalstats/blob/main/images/pyspherstats.png" width="400">
 </p>
+
+
 
 ### Example of use
 ```
