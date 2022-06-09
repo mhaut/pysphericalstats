@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    pathfile = "../dataset/XYZcoor.txt"
+    pathfile = "../datasets/XYZcoor.txt"
     vectorsMatrix = pySpfileIO.read_file(pathfile)
     
     

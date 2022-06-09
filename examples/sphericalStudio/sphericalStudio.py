@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
     def load_data(self):
         print(self.imageicono.geometry())
         fpath = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
-            '../datasets',"Image files (*.txt)")[0]
+            '../../datasets',"Image files (*.txt)")[0]
         if fpath:
             if   self.type3D.isChecked(): typeF = 'data3D'
             else:

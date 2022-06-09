@@ -8,6 +8,9 @@ import os
 
 
 DPIEXPORT = 81
+plt.style.use('default')
+#plt.style.use('ggplot')
+
 
 def export_image(fig):
     path = pySpFileIO.get_output_path_file()
