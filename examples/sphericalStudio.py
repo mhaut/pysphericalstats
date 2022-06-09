@@ -1,7 +1,3 @@
-import sys
-#sys.path.append("C:\\Users\\josei\\Desktop\\pysphericalstats-main_ultimaVersionGit\\pysphericalstats-main\\pysphericalstats")
-sys.path.append("/home/titan/software/pysphericalstats-main/pysphericalstats-main/pysphericalstats")
-
 from auxstudio.interface import *
 import numpy as np
 import pysphericalstats.fileIO as pySpFileIO

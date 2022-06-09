@@ -1,7 +1,3 @@
-import sys
-#sys.path.append("C:\\Users\\josei\\Desktop\\pysphericalstats-main_ultimaVersionGit\\pysphericalstats-main\\pysphericalstats")
-sys.path.append("/home/titan/software/pysphericalstats-main/pysphericalstats-main/pysphericalstats")
-
 import pysphericalstats.fileIO as pySpfileIO
 import pysphericalstats.convert as pySpCconvert
 import pysphericalstats.math as pySpMath
