@@ -47,7 +47,7 @@ def vector_to_polar(vector_matrix):
     z = []
     i = 0
 
-    while i < ArithmeticUtil.number_of_elements(vector_matrix[0]):
+    while i < len(vector_matrix[0]):
         x = vector_matrix[0][i]
         y = vector_matrix[1][i]
         z = vector_matrix[2][i]
@@ -83,8 +83,6 @@ def vector_to_polar(vector_matrix):
         i += 1
 
     return polar_vectors
-
-
 
 
 

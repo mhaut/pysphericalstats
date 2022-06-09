@@ -1,12 +1,15 @@
+import sys
+#sys.path.append("C:\\Users\\josei\\Desktop\\pysphericalstats-main_ultimaVersionGit\\pysphericalstats-main\\pysphericalstats")
+sys.path.append("/home/titan/software/pysphericalstats-main/pysphericalstats-main/pysphericalstats")
+
 from auxstudio.interface import *
 import numpy as np
-import pycircularstats.fileIO as pyCfileIO
-import pycircularstats.convert as pyCconvert
-import pycircularstats.math as pyCmath
-import pycircularstats.draw as pyCdraw
+import pysphericalstats.fileIO as pySpFileIO
+import pysphericalstats.convert as pySpConvert
+import pysphericalstats.math as pySpMath
+import pysphericalstats.draw as pySpDraw
 import PyQt5
 from matplotlib.backends.backend_qt5agg import FigureCanvas
-
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_Form):
@@ -15,7 +18,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
         self.setupUi(self)
         self.sceneGrahics = PyQt5.QtWidgets.QGraphicsScene()
         self.graphicsView.setScene(self.sceneGrahics)
-        pyCdraw.DPIEXPORT = 81
+        pySpDraw.DPIEXPORT = 90
         #print(self.imageicono.geometry())
         #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
@@ -51,64 +54,53 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
         fpath = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
             '../datasets',"Image files (*.txt)")[0]
         if fpath:
-            if   self.type0.isChecked(): typeF = 'cartesian'
-            elif self.type1.isChecked(): typeF = 'incremental'
-            elif self.type2.isChecked(): typeF = 'polar'
-            elif self.type3.isChecked(): typeF = 'vectors'
+            if   self.type3D.isChecked(): typeF = 'data3D'
             else:
                 self.show_message("ERROR", "select type")
             try:
-                self.data = pyCfileIO.loaddata(fpath, typedata=typeF)
-                self.modules  = self.data[:,0]
-                self.azimuths = self.data[:,1]
-                self.X_coordinate = self.data[:,2]
-                self.Y_coordinate = self.data[:,3]
+                vectorsMatrix = pySpFileIO.read_file(fpath)
+                self.data     = pySpFileIO.load_data(vectorsMatrix)
+                self.modules  = pySpFileIO.getColumnAsArray(0, self.data)
+                self.coordinates = (pySpMath.getColumnAsArray(3, self.data),
+                                    pySpMath.getColumnAsArray(4, self.data),
+                                    pySpMath.getColumnAsArray(5, self.data))
                 fname = fpath.split("/")[-1]
                 self.labelpath.setText(fname)
                 self.calculate.setEnabled(True)
             except:
                 self.show_message("ERROR", "invalid text format")
 
-
     # cada radiobuton
     def exec_func(self):
         if self.densityGraph.isChecked():
             self.drawdensityGraph() 
         elif self.angledistribution.isChecked():
-            self.angledistribution() #metodo que calcula el angledistribution
+            self.drawangledistribution() 
         elif self.vectorgraph.isChecked():
-            self.drawhisto() #metodo que calcula el vectorgraph
+            self.drawvectorgraph() 
         elif self.modstats.isChecked():
             self.modulestats()
-        elif self.anglestats.isChecked():
+        elif self.angstats.isChecked():
             self.anglestats()
 
-    # los cambias aqui
     def drawdensityGraph(self):
-        # llamar al metodo que calcula el densityGraph con los parametros
-        figure = pyCdraw.drawmoduleandazimuthdistribution(self.X_coordinate, self.Y_coordinate)
+        figure = pySpDraw.draw_density_graph(self.data)
         self.drawObject(figure)
 
-    def angledistribution(self):
-        # llamar al metodo que calcula el angledistribution con los parametros
-        figure = pyCdraw.drawdistribution(self.azimuths)
+    def drawangledistribution(self):
+        figure = pySpDraw.draw_module_angle_distrib(self.data)
         self.drawObject(figure)
 
-    def vectorgraph(self):
-        # llamar al metodo que calcula el vectorgraph con los parametros
-        figure = pyCdraw.drawhistogram(self.azimuths, classSize=15)
+    def drawvectorgraph(self):
+        figure = pySpDraw.draw_vector_graph(self.data)
         self.drawObject(figure)
 
     def modulestats(self):
-        # llamar al metodo que calcula el modulestats con los parametros
-        figure = pyCmath.allmodulestatistics(self.modules)
+        figure = pySpMath.allmodulestatistics(self.modules)
         self.drawObject(figure)
 
     def anglestats(self):
-        # llamar al metodo que calcula el anglestats con los parametros
-        figure  = pyCmath.allazimuthstatistic(self.azimuths)
-        figure += pyCmath.raotest(self.azimuths)
-        figure += pyCmath.rayleightest(self.azimuths)
+        figure = pySpMath.allanglesstatistics(self.modules, self.coordinates)
         self.drawObject(figure)
 
 

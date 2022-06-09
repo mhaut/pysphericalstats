@@ -1,102 +1,37 @@
 import sys
-sys.path.append("../pysphericalstats/")
+#sys.path.append("C:\\Users\\josei\\Desktop\\pysphericalstats-main_ultimaVersionGit\\pysphericalstats-main\\pysphericalstats")
+sys.path.append("/home/titan/software/pysphericalstats-main/pysphericalstats-main/pysphericalstats")
 
-import pysphericalstats.fileIO as pySfileIO
-
-#from pysphericalstats.manager.FileManager import FileManager
-#from pysphericalstats.manager.ModuleStatisticsManager import ModuleStatisticsManager
-#from pysphericalstats.manager.AngleStatisticsManager import AngleStatisticsManager
-#from pysphericalstats.util.ArithmeticUtil import ArithmeticUtil
-#from pysphericalstats.manager.graphs.ModuleAngleGraph import ModuleAngleGraph
-#from pysphericalstats.manager.graphs.DensityGraph import DensityGraph
-#from pysphericalstats.manager.graphs.VectorGraph import VectorGraph
+import pysphericalstats.fileIO as pySpfileIO
+import pysphericalstats.convert as pySpCconvert
+import pysphericalstats.math as pySpMath
+import pysphericalstats.draw as pySpDraw
+import matplotlib.pyplot as plt
 
 
 def main():
-
-    #moduleStatisticsManager = ModuleStatisticsManager()
-    #angleStatisticsManager  = AngleStatisticsManager()
-    #moduleAngleGraph        = ModuleAngleGraph()
-    #densityGraph            = DensityGraph()
-    #vectorGraph             = VectorGraph
-
-    #fileManager = FileManager()
-    #fileManager.read_file()
-    
-    pathfile = "../data/XYZcoor.txt"
-    vectorsMatrix = pySfileIO.read_file(pathfile)
+    pathfile = "../dataset/XYZcoor.txt"
+    vectorsMatrix = pySpfileIO.read_file(pathfile)
     
     
-    dat     = pySfileIO.load_data(vectorsMatrix)
-    modules = pySfileIO.getColumnAsArray(0, dat)
+    dat     = pySpfileIO.load_data(vectorsMatrix)
+    modules = pySpfileIO.getColumnAsArray(0, dat)
 
-
-    # estas en math.py
-    n_elements = ArithmeticUtil.number_of_elements(modules)
-    min_value = ArithmeticUtil.min_value(modules)
-    max_value = ArithmeticUtil.max_value(modules)
-    range_value = ArithmeticUtil.range(modules)
-    module_sum = ArithmeticUtil.module_sum(modules)
-    m_arithmetic = ArithmeticUtil.arithmetic_mean(modules)
-    s_error = ArithmeticUtil.standard_error(modules)
-    s_d_module = moduleStatisticsManager.module_standard_deviation(modules)
-    s_d_module_p = moduleStatisticsManager.module_population_standard_deviation(modules)
-    v_module = moduleStatisticsManager.module_variance(modules)
-    v_module_p = moduleStatisticsManager.module_population_variance(modules)
-    cs = moduleStatisticsManager.skewness_module_coefficient(modules)
-    ca = moduleStatisticsManager.kurtois_module_coefficient(modules)
-
-    print("  ---------------------------  ")
-    print("  LINEAR STATISTICS - MODULES  ")
-    print("  ---------------------------  ")
-    print("  NUMBER OF ELEMENTS            =", n_elements)
-    print("  MIN VALUE                     =", min_value)
-    print("  MAX VALUE                     =", max_value)
-    print("  RANGE                         =", range_value)
-    print("  ARITHMETIC MEAN               =", m_arithmetic)
-    print("  MEAN STANDARD ERROR           =", s_error)
-    print("  STANDARD DEVIATION            =", s_d_module)
-    print("  VARIANCE                      =", v_module)
-    print("  POPULATION STANDARD DEVIATION =", s_d_module)
-    print("  POPULATION VARIANCE           =", v_module_p)
-    print("  SKEWNESS COEFFICIENT          =", cs)
-    print("  KURTOSIS COEFFICIENT          =", ca)
+    resultado = pySpMath.allmodulestatistics(modules)
+    print(resultado)
 
     coordinates = (
-        pySfileIO.getColumnAsArray(3, dat), pySfileIO.getColumnAsArray(4, dat), pySfileIO.getColumnAsArray(5, dat))
+        pySpMath.getColumnAsArray(3, dat), pySpMath.getColumnAsArray(4, dat), pySpMath.getColumnAsArray(5, dat))
 
-    # estas en math.py
-    vm_direction   = angleStatisticsManager.mean_direction(coordinates)
-    vm_module      = angleStatisticsManager.mean_module(coordinates)
-    unit_incr      = angleStatisticsManager.real_mod_to_unit_mod(coordinates)
-    um_direction   = angleStatisticsManager.mean_direction(unit_incr)
-    um_module      = angleStatisticsManager.mean_module(unit_incr)
-    conc_parameter = angleStatisticsManager.concentration_parameter(unit_incr)
-    sphericalErr   = angleStatisticsManager.spherical_error(unit_incr)
+    result = pySpMath.allanglesstatistics(modules, coordinates)
+    print(result)
 
-    print("  -------------------------------  ")
-    print("  SPHERICAL STATISTICS - ANGLES    ")
-    print("  -------------------------------  ")
-    print("  NUMBER OF ELEMENTS =", n_elements)
-    print("                                   ")
-    print("  Statistics for real (non-unit) vectors  ")
-    print("  --------------------------------------  ")
-    print("  COLATITUDE  =", vm_direction[1])
-    print("  LONGITUDE   =", vm_direction[0])
-    print("  MEAN MODULE =", vm_module)
-    print("                                 ")
-    print("  Statistics for unit vectors    ")
-    print("  -----------------------------  ")
-    print("  COLATITUDE                =", um_direction[1])
-    print("  LONGITUDE                 =", um_direction[0])
-    print("  MEAN MODULE               =", um_module)
-    print("  CONCENTRATION PARAMETER   =", conc_parameter)
-    print("  SPHERICAL STANDARD ERROR  =", sphericalErr)
-
-    # estas en draw.py
-    moduleAngleGraph.draw_module_angle_distrib(dat)
-    densityGraph.draw_density_graph(dat)
-    vectorGraph.draw_vector_graph(dat)
+    pySpDraw.draw_module_angle_distrib(dat)
+    plt.show()
+    pySpDraw.draw_density_graph(dat, save_image=False)
+    plt.show()
+    pySpDraw.draw_vector_graph(dat, save_image=True)
+    plt.show()
 
 
 

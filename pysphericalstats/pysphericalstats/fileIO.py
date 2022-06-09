@@ -12,6 +12,13 @@ def calculateAxisIncrementVector(vectors_matrix):
                                 float(vector.__getitem__(5)) - float(vector.__getitem__(2))]))
     return fixed_vector
 
+def getColumnAsArray(column_index, matrix):
+    column = []
+    for vector in matrix:
+        for i in range(len(vector)):
+            if i == column_index:
+                column.append(vector[i])
+    return column
 
 def calculatePolarFormVector(incremental_vectors):
     modules_2d = []
@@ -42,10 +49,9 @@ def read_file(pathfile):
     vectors_array = []; vectorsMatrix = []
     with open(pathfile) as f:
         for line in f:
-            for coordinate in line.split():
-                vectors_array.append(float(coordinate))
-            vectorsMatrix.append(np.array(vectors_array))
-            vectors_array = []
+            vectorsMatrix.append([float(coordinate) for coordinate in line.split()])
+    vectors_matrix = np.array(vectorsMatrix)
+    if vectors_matrix.shape[1] != 6: exit()
     return np.array(vectorsMatrix)
 
 
@@ -77,11 +83,39 @@ def load_data(vectors_matrix):
         data.append(vector)
     return data
 
+def get_input_path_file():
+    path = input("Enter coordinates file path: ")
+    return path
 
-def getColumnAsArray(column_index, matrix):
-    column = []
-    for vector in matrix:
-        for i in range(len(vector)):
-            if i == column_index:
-                column.append(vector[i])
-    return column
+def get_output_path_file():
+    path = ""
+    isSaving = input("Do you want to save scene scene image?(s/n): ")
+    if isSaving == "s":
+        path = input("Enter path for image output: ")
+    return path
+
+def transformData(vectorsMatrix):
+    __fixedVectorsMatrix = []
+    for vector in vectorsMatrix:
+        fixedVector = [float(vector.__getitem__(0)),
+                        float(vector.__getitem__(1)),
+                        float(vector.__getitem__(2)),
+                        float(vector.__getitem__(3)) - float(vector.__getitem__(0)),
+                        float(vector.__getitem__(4)) - float(vector.__getitem__(1)),
+                        float(vector.__getitem__(5)) - float(vector.__getitem__(2))]
+        __fixedVectorsMatrix.append(fixedVector)
+    return __fixedVectorsMatrix
+
+def simpleLoad():
+    path = '/home/pedro/PycharmProjects/test2.7/test/XYZcoor.txt'
+
+    vectorsArray = []
+    vectorsMatrix = []
+    with open(path) as f:
+        for line in f:
+            for coordinate in line.split():
+                vectorsArray.append(float(coordinate))
+            vectorsMatrix.append(vectorsArray)
+            vectorsArray = []
+
+    return vectorsMatrix
