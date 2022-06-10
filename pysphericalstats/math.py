@@ -29,12 +29,12 @@ def mean_direction(coordinates_matrix):
     mean_longitude = 0
     if mean_y > 0 and mean_x > 0:
         mean_longitude = np.math.atan(mean_y / mean_x)
-    elif mean_y > 0 > mean_x:
+    elif mean_y > 0 and mean_x < 0:
         mean_longitude = np.math.atan(mean_y / mean_x) + np.math.pi
     elif mean_y < 0 and mean_x < 0:
         mean_longitude = np.math.atan(mean_y / mean_x) + np.math.pi
-    elif mean_y < 0 < mean_x:
-        mean_longitude = np.math.atan(mean_y / mean_x) + (2 * np.math.pi)
+    elif mean_y < 0 and mean_x > 0:
+        mean_longitude = np.math.atan(mean_y / mean_x) + 2 * np.math.pi
     mean_longitude = pySpCconvert.to_sexagesimal_3d(mean_longitude)
     mean_colatitud = np.math.acos(mean_z)
     mean_colatitud = pySpCconvert.to_sexagesimal_3d(mean_colatitud)
@@ -52,13 +52,12 @@ def mean_module(coordinates_matrix):
 
 
 def real_mod_to_unit_mod(coordinates_matrix):
-    x = coordinates_matrix[0]
-    n_elements = len(x)
+    n_elements = len(coordinates_matrix[0])
     polar_values = pySpCconvert.vector_to_polar(coordinates_matrix)
-    module = [1] * n_elements
-    colatitud = getColumnAsArray(1, polar_values)
-    longitude = getColumnAsArray(2, polar_values)
-    u_vector = [module, colatitud, longitude]
+    polar_values = np.array(polar_values)
+    u_vector = np.ones((3, n_elements))
+    u_vector[1] = polar_values[1]
+    u_vector[2] = polar_values[2]
     unit_incr = pySpCconvert.vectors_to_rectangular(u_vector)
     return unit_incr
 

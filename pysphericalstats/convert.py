@@ -26,65 +26,32 @@ def vectors_to_rectangular(vectors):
     module    = vectors[0]
     colatitud = vectors[1]
     longitude = vectors[2]
-
     radian_colatitude = to_radian(colatitud)
     radian_longitude  = to_radian(longitude)
-
     x = np.sin(radian_colatitude) * np.cos(radian_longitude) * module
     y = np.sin(radian_colatitude) * np.sin(radian_longitude) * module
     z = np.cos(radian_colatitude) * module
-
     rectangular_vectors = [x, y, z]
     return rectangular_vectors
 
 
 def vector_to_polar(vector_matrix):
-    modules_2d = []
-    colatitud = []
-    xy_atan = []
-    polar_vectors = []
-    z = []
-    i = 0
-
-    while i < len(vector_matrix[0]):
-        x = vector_matrix[0][i]
-        y = vector_matrix[1][i]
-        z = vector_matrix[2][i]
-        modules_2d.append(np.math.sqrt(x ** 2 + y ** 2))
-        xy_atan.append(np.arctan(y / x))
-        i +=1
-
-    for i, x in enumerate(modules_2d):
-        y = vector_matrix[1][i]
-        aux = np.math.atan(y / x)
-        if aux < 0:
-            aux += np.math.pi
-        colatitud.append(aux)
-
+    vector_matrix = np.array(vector_matrix).T
+    num_data = vector_matrix.shape[0]
+    x = vector_matrix[:,0]
+    y = vector_matrix[:,1]
+    z = vector_matrix[:,2]
+    module2D  = np.sqrt(x**2 + y**2)
+    colatitud = np.arctan(module2D / z)
+    colatitud[np.isnan(colatitud)] = 0
+    colatitud[colatitud < 0] += np.math.pi
     colatitud = to_sexagesimal_3d(colatitud)
-    longitud  = to_sexagesimal_3d(xy_atan)
+    longitud  = to_sexagesimal_3d(np.arctan(y / x))
+    longitud[np.isnan(longitud)] = 0
+    longitud[x < 0] += 180
+    longitud[longitud < 0] += 360
 
-    fixed_longitud = []
-    for aux in longitud:
-        if aux < 0:
-            aux +=360
-        fixed_longitud.append(aux)
-
-
-    i = 0
-    while i < len(vector_matrix[0]):
-        x = vector_matrix[0][i]
-        y = vector_matrix[1][i]
-        z = vector_matrix[2][i]
-        polar_vectors.append([np.math.sqrt(x ** 2 + y ** 2 + z ** 2),
-                                colatitud[i],
-                                fixed_longitud[i]])
-        i += 1
-
+    polar_vectors =[np.sqrt(x ** 2 + y ** 2 + z ** 2),
+                    colatitud,
+                    longitud]
     return polar_vectors
-
-
-
-
-
-

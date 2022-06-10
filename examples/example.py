@@ -3,10 +3,11 @@ import pysphericalstats.convert as pySpCconvert
 import pysphericalstats.math as pySpMath
 import pysphericalstats.draw as pySpDraw
 import matplotlib.pyplot as plt
-
+import numpy as np
 
 def main():
-    pathfile = "../datasets/XYZcoor.txt"
+    #pathfile = "../datasets/XYZcoor.txt"
+    pathfile = "../datasets/3dMDE.txt"
     vectorsMatrix = pySpfileIO.read_file(pathfile)
     
     
@@ -16,8 +17,7 @@ def main():
     resultado = pySpMath.allmodulestatistics(modules)
     print(resultado)
 
-    coordinates = (
-        pySpMath.getColumnAsArray(3, dat), pySpMath.getColumnAsArray(4, dat), pySpMath.getColumnAsArray(5, dat))
+    coordinates = (pySpMath.getColumnAsArray(3, dat), pySpMath.getColumnAsArray(4, dat), pySpMath.getColumnAsArray(5, dat))
 
     result = pySpMath.allanglesstatistics(modules, coordinates)
     print(result)
