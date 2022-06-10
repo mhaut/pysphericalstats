@@ -15,69 +15,51 @@ def find_max(numbers):
 def calculate_vector_module(x, y, z, x1, y1, z1):
     return np.math.sqrt(((x - x1)**2) + ((y - y1)**2) + ((z-z1)**2))
 
+
 #Estas son de AngleStatisticsManager
 def mean_direction(coordinates_matrix):
     x = coordinates_matrix[0]
     y = coordinates_matrix[1]
     z = coordinates_matrix[2]
-
-    mean = []
     n_elements = len(x)
-    r = np.math.sqrt((np.sum(x) * np.sum(x)) + (np.sum(y) * np.sum(y)) + (np.sum(z) * np.sum(z)))
-
+    r = np.math.sqrt(np.sum(x)**2 + np.sum(y)**2 + np.sum(z)**2)
     mean_x = np.sum(x) / r
     mean_y = np.sum(y) / r
     mean_z = np.sum(z) / r
     mean_longitude = 0
-
     if mean_y > 0 and mean_x > 0:
         mean_longitude = np.math.atan(mean_y / mean_x)
-
-    if mean_y > 0 > mean_x:
+    elif mean_y > 0 > mean_x:
         mean_longitude = np.math.atan(mean_y / mean_x) + np.math.pi
-
-    if mean_y < 0 and mean_x < 0:
+    elif mean_y < 0 and mean_x < 0:
         mean_longitude = np.math.atan(mean_y / mean_x) + np.math.pi
-
-    if mean_y < 0 < mean_x:
+    elif mean_y < 0 < mean_x:
         mean_longitude = np.math.atan(mean_y / mean_x) + (2 * np.math.pi)
-
     mean_longitude = pySpCconvert.to_sexagesimal_3d(mean_longitude)
     mean_colatitud = np.math.acos(mean_z)
     mean_colatitud = pySpCconvert.to_sexagesimal_3d(mean_colatitud)
+    return [mean_longitude, mean_colatitud]
 
-    mean.append(mean_longitude)
-    mean.append(mean_colatitud)
-    return mean
 
 def mean_module(coordinates_matrix):
     x = coordinates_matrix[0]
     y = coordinates_matrix[1]
     z = coordinates_matrix[2]
     n_elements = len(x)
-    r = np.math.sqrt((np.sum(x) * np.sum(x)) + (np.sum(y) * np.sum(y)) + (np.sum(z) * np.sum(z)))
-
+    r = np.math.sqrt(np.sum(x)**2 + np.sum(y)**2 + np.sum(z)**2)
     mean_module_ = r / n_elements
-
     return mean_module_
+
 
 def real_mod_to_unit_mod(coordinates_matrix):
     x = coordinates_matrix[0]
-    y = coordinates_matrix[1]
-    z = coordinates_matrix[2]
-
     n_elements = len(x)
-
     polar_values = pySpCconvert.vector_to_polar(coordinates_matrix)
     module = [1] * n_elements
     colatitud = getColumnAsArray(1, polar_values)
     longitude = getColumnAsArray(2, polar_values)
-    # colatitud = polar_values[:, 1]
-    # longitude = polar_values[:, 2]
-
     u_vector = [module, colatitud, longitude]
     unit_incr = pySpCconvert.vectors_to_rectangular(u_vector)
-
     return unit_incr
 
 
@@ -87,7 +69,7 @@ def concentration_parameter(coordinates_matrix):
     z = coordinates_matrix[2]
     n_elements = len(x)
     mean_module_ = mean_module(coordinates_matrix)
-    parameter = (n_elements - 1) / float((n_elements * (1 - mean_module_)))
+    parameter = (n_elements - 1) / (n_elements * (1 - mean_module_))
 
     return parameter
 
@@ -108,9 +90,9 @@ def allmodulestatistics(modules, ndig=2):
     ca = kurtois_module_coefficient(modules)
 
     formatSpec = '.'+str(ndig)+'f'
-    string = ("  ---------------------------  " + "\n")
-    string += ("  LINEAR STATISTICS - MODULES  "+ "\n")
-    string += ("  ---------------------------  "+ "\n")
+    string =  ("  ---------------------------  "  + "\n")
+    string += ("  LINEAR STATISTICS - MODULES  "  + "\n")
+    string += ("  ---------------------------  "  + "\n")
     string += ("  NUMBER OF ELEMENTS ="           + str(format(round(n_elements,ndig),formatSpec))+ "\n")
     string += ("  MIN VALUE ="                    + str(format(round(min_value,ndig),formatSpec))+ "\n")
     string += ("  MAX VALUE ="                    + str(format(round(max_value,ndig),formatSpec))+ "\n")
@@ -123,7 +105,6 @@ def allmodulestatistics(modules, ndig=2):
     string += ("  POPULATION VARIANCE ="          + str(format(round(v_module_p,ndig),formatSpec))+ "\n")
     string += ("  SKEWNESS COEFFICIENT ="         + str(format(round(cs,ndig),formatSpec))+ "\n")
     string += ("  KURTOSIS COEFFICIENT ="         + str(format(round(ca,ndig),formatSpec))+ "\n")
-
     return string + "\n"
 
 def allanglesstatistics(modules, coordinates, ndig=2):
@@ -136,26 +117,26 @@ def allanglesstatistics(modules, coordinates, ndig=2):
     sphericalErr   = spherical_error(unit_incr)
 
     formatSpec = '.'+str(ndig)+'f'
-    string =  ("  -------------------------------  " + "\n")
-    string += ("  SPHERICAL STATISTICS - ANGLES    " + "\n")
-    string += ("  -------------------------------  " + "\n")
-    string += ("  NUMBER OF ELEMENTS =" + str(format(round(len(modules),ndig),formatSpec)) + "\n")
-    string += ("                                   " + "\n")
+    string =  ("  -------------------------------  "        + "\n")
+    string += ("  SPHERICAL STATISTICS - ANGLES    "        + "\n")
+    string += ("  -------------------------------  "        + "\n")
+    string += ("  NUMBER OF ELEMENTS ="                     + str(format(round(len(modules),ndig),formatSpec)) + "\n")
+    string += ("                                   "        + "\n")
     string += ("  Statistics for real (non-unit) vectors  " + "\n")
     string += ("  --------------------------------------  " + "\n")
-    string += ("  COLATITUDE =" + str(format(round(vm_direction[1],ndig),formatSpec)) + "\n")
-    string += ("  LONGITUDE ="  + str(format(round(vm_direction[0],ndig),formatSpec)) + "\n")
-    string += ("  MEAN MODULE ="+ str(format(round(vm_module,ndig),formatSpec)) + "\n")
-    string += ("                                 " + "\n")
-    string += ("  Statistics for unit vectors    " + "\n")
-    string += ("  -----------------------------  " + "\n")
-    string += ("  COLATITUDE ="               + str(format(round(um_direction[1],ndig),formatSpec)) + "\n")
-    string += ("  LONGITUDE ="                + str(format(round(um_direction[0],ndig),formatSpec)) + "\n")
-    string += ("  MEAN MODULE ="              + str(format(round(um_module,ndig),formatSpec)) + "\n")
-    string += ("  CONCENTRATION PARAMETER ="  + str(format(round(conc_parameter,ndig),formatSpec)) + "\n")
-    string += ("  SPHERICAL STANDARD ERROR =" + str(format(round(sphericalErr,ndig),formatSpec)) + "\n")
-
+    string += ("  COLATITUDE ="                             + str(format(round(vm_direction[1],ndig),formatSpec)) + "\n")
+    string += ("  LONGITUDE ="                              + str(format(round(vm_direction[0],ndig),formatSpec)) + "\n")
+    string += ("  MEAN MODULE ="                            + str(format(round(vm_module,ndig),formatSpec)) + "\n")
+    string += ("                                 "          + "\n")
+    string += ("  Statistics for unit vectors    "          + "\n")
+    string += ("  -----------------------------  "          + "\n")
+    string += ("  COLATITUDE ="                             + str(format(round(um_direction[1],ndig),formatSpec)) + "\n")
+    string += ("  LONGITUDE ="                              + str(format(round(um_direction[0],ndig),formatSpec)) + "\n")
+    string += ("  MEAN MODULE ="                            + str(format(round(um_module,ndig),formatSpec)) + "\n")
+    string += ("  CONCENTRATION PARAMETER ="                + str(format(round(conc_parameter,ndig),formatSpec)) + "\n")
+    string += ("  SPHERICAL STANDARD ERROR ="               + str(format(round(sphericalErr,ndig),formatSpec)) + "\n")
     return string + "\n"
+
 
 def spherical_error(coordinates_matrix):
     x = coordinates_matrix[0]
@@ -164,22 +145,20 @@ def spherical_error(coordinates_matrix):
     n_elements = len(x)
 
     if n_elements >= 25:
-        r = np.math.sqrt((np.sum(x) * np.sum(x)) + (np.sum(y) * np.sum(y)) + (np.sum(z) * np.sum(z)))
-        mean_x = np.sum(x) / float(r)
-        mean_y = np.sum(y) / float(r)
-        mean_z = np.sum(z) / float(r)
+        r = np.math.sqrt(np.sum(x)**2 + np.sum(y)**2 + np.sum(z)**2)
+        mean_x = np.sum(x) / r
+        mean_y = np.sum(y) / r
+        mean_z = np.sum(z) / r
         x = x * mean_x
         y = y * mean_y
         z = z * mean_z
-        sum = x + y + z
-        sum2 = sum ** 2
+        sum2 = (x + y + z) ** 2
         d = 1 - (1/float(n_elements) * np.math.fsum(sum2))
         Mm = mean_module(coordinates_matrix)
         sigma = np.sqrt(abs(d / float(n_elements * Mm * Mm)))
-        ea = np.log(0.05) *-1
+        ea = np.log(0.05) * -1
         Q = np.arcsin(sigma * np.sqrt(ea))
         Q = pySpCconvert.to_sexagesimal_3d(Q)
-
         return Q
 
 #Estas son de ModuleStatisticsManager

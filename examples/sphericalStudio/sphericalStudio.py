@@ -54,12 +54,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
             else:
                 self.show_message("ERROR", "select type")
             try:
-                vectorsMatrix = pySpFileIO.read_file(fpath)
-                self.data     = pySpFileIO.load_data(vectorsMatrix)
-                self.modules  = pySpFileIO.getColumnAsArray(0, self.data)
-                self.coordinates = (pySpMath.getColumnAsArray(3, self.data),
-                                    pySpMath.getColumnAsArray(4, self.data),
-                                    pySpMath.getColumnAsArray(5, self.data))
+                vectorsMatrix    = pySpFileIO.read_file(fpath)
+                self.data        = pySpFileIO.load_data(vectorsMatrix)
+                self.modules     = pySpFileIO.getColumnAsArray(0, self.data)
+                self.coordinates =  (pySpMath.getColumnAsArray(3, self.data),
+                                     pySpMath.getColumnAsArray(4, self.data),
+                                     pySpMath.getColumnAsArray(5, self.data))
                 fname = fpath.split("/")[-1]
                 self.labelpath.setText(fname)
                 self.calculate.setEnabled(True)

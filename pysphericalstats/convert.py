@@ -11,16 +11,15 @@ def to_sexagesimal_3d(radians):
     return grades
 
 def to_radian(grades):
-    radians = []
     if isinstance(grades, list):
         radians = [item / 180 * np.math.pi  for item in grades]
     else:
-        radians = (grades / 180 * np.math.pi)
+        radians = grades / 180 * np.math.pi
     return radians
 
 
 def calculate_vector_module(x, y, z, x1, y1, z1):
-    return np.math.sqrt(((x - x1)**2) + ((y - y1)**2) + ((z-z1)**2))
+    return np.math.sqrt((x - x1)**2 + (y - y1)**2 + (z-z1)**2)
 
 
 def vectors_to_rectangular(vectors):
@@ -32,10 +31,10 @@ def vectors_to_rectangular(vectors):
     radian_longitude  = to_radian(longitude)
 
     x = np.sin(radian_colatitude) * np.cos(radian_longitude) * module
-    y = np.sin(to_radian(colatitud)) * np.sin(to_radian(longitude)) * module
-    z = np.cos(to_radian(colatitud)) * module
+    y = np.sin(radian_colatitude) * np.sin(radian_longitude) * module
+    z = np.cos(radian_colatitude) * module
 
-    rectangular_vectors = (x, y, z)
+    rectangular_vectors = [x, y, z]
     return rectangular_vectors
 
 
