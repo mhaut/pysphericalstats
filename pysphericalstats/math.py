@@ -100,7 +100,7 @@ def allmodulestatistics(modules, ndig=2):
     string += ("  MEAN STANDARD ERROR ="          + str(format(round(s_error,ndig),formatSpec))+ "\n")
     string += ("  STANDARD DEVIATION ="           + str(format(round(s_d_module,ndig),formatSpec))+ "\n")
     string += ("  VARIANCE ="                     + str(format(round(v_module,ndig),formatSpec))+ "\n")
-    string += ("  POPULATION STANDARD DEVIATION ="+ str(format(round(s_d_module,ndig),formatSpec))+ "\n")
+    string += ("  POPULATION STANDARD DEVIATION ="+ str(format(round(s_d_module_p,ndig),formatSpec))+ "\n")
     string += ("  POPULATION VARIANCE ="          + str(format(round(v_module_p,ndig),formatSpec))+ "\n")
     string += ("  SKEWNESS COEFFICIENT ="         + str(format(round(cs,ndig),formatSpec))+ "\n")
     string += ("  KURTOSIS COEFFICIENT ="         + str(format(round(ca,ndig),formatSpec))+ "\n")
