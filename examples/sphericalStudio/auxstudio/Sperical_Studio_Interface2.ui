@@ -94,11 +94,14 @@
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QRadioButton" name="type3D">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="text">
                <string>3d file</string>
               </property>
               <property name="checked">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
              </widget>
             </item>
