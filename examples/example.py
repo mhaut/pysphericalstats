@@ -11,15 +11,14 @@ def main():
     vectorsMatrix = pySpfileIO.read_file(pathfile)
     
     
-    dat     = pySpfileIO.load_data(vectorsMatrix)
-    modules = pySpfileIO.getColumnAsArray(0, dat)
+    dat         = pySpfileIO.load_data(vectorsMatrix)
+    modules     = dat[:,0]
+    coordinates = dat[:,3:6]
 
     resultado = pySpMath.allmodulestatistics(modules)
+    result    = pySpMath.allanglesstatistics(modules, coordinates)
+
     print(resultado)
-
-    coordinates = (pySpMath.getColumnAsArray(3, dat), pySpMath.getColumnAsArray(4, dat), pySpMath.getColumnAsArray(5, dat))
-
-    result = pySpMath.allanglesstatistics(modules, coordinates)
     print(result)
 
     pySpDraw.draw_module_angle_distrib(dat)
@@ -27,7 +26,8 @@ def main():
     pySpDraw.draw_density_graph(dat, save_image=False)
     plt.show()
     pySpDraw.draw_vector_graph(dat, save_image=True)
-    plt.show()
+    #pySpDraw.draw_vector_graph(dat, save_image=False)
+    #plt.show()
 
 
 

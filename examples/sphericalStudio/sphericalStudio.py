@@ -60,18 +60,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if self.type3D.isChecked() == False:
                 self.show_message("ERROR", "select type")
             else:
-                try:
+                #try:
                     vectorsMatrix    = pySpFileIO.read_file(fpath)
                     self.data        = pySpFileIO.load_data(vectorsMatrix)
-                    self.modules     = pySpFileIO.getColumnAsArray(0, self.data)
-                    self.coordinates =  (pySpMath.getColumnAsArray(3, self.data),
-                                        pySpMath.getColumnAsArray(4, self.data),
-                                        pySpMath.getColumnAsArray(5, self.data))
+                    #print(self.data.shape)
+                    #exit()
+                    #self.modules     = pySpFileIO.getColumnAsArray(0, self.data)
+                    #self.coordinates =  (pySpMath.getColumnAsArray(3, self.data),
+                                        #pySpMath.getColumnAsArray(4, self.data),
+                                        #pySpMath.getColumnAsArray(5, self.data))
+                    self.modules     = self.data[:,0]
+                    self.coordinates = (self.data[:,3],self.data[:,4],self.data[:,5])
+                    #self.coordinates =  (pySpMath.getColumnAsArray(3, self.data),
+                                        #pySpMath.getColumnAsArray(4, self.data),
+                                        #pySpMath.getColumnAsArray(5, self.data))
+
                     fname = fpath.split("/")[-1]
                     self.labelpath.setText(fname)
                     self.calculate.setEnabled(True)
-                except:
-                    self.show_message("ERROR", "invalid text format")
+                #except:
+                    #self.show_message("ERROR", "invalid text format")
 
     # cada radiobuton
     def exec_func(self):

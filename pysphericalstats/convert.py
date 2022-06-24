@@ -23,24 +23,38 @@ def calculate_vector_module(x, y, z, x1, y1, z1):
 
 
 def vectors_to_rectangular(vectors):
-    module    = vectors[0]
-    colatitud = vectors[1]
-    longitude = vectors[2]
-    radian_colatitude = to_radian(colatitud)
-    radian_longitude  = to_radian(longitude)
-    x = np.sin(radian_colatitude) * np.cos(radian_longitude) * module
-    y = np.sin(radian_colatitude) * np.sin(radian_longitude) * module
-    z = np.cos(radian_colatitude) * module
-    rectangular_vectors = [x, y, z]
+    module, colatitud, longitud = (*vectors,)
+    radian_colatitud = to_radian(colatitud)
+    radian_longitud  = to_radian(longitud)
+    x = np.sin(radian_colatitud) * np.cos(radian_longitud) * module
+    y = np.sin(radian_colatitud) * np.sin(radian_longitud) * module
+    z = np.cos(radian_colatitud)                           * module
+    rectangular_vectors = np.array([x, y, z])
     return rectangular_vectors
 
 
+def vectorsToPolar(incremental_vectors):
+    num_data = incremental_vectors.shape[0]
+    x = incremental_vectors[:, 0]
+    y = incremental_vectors[:, 1]
+    z = incremental_vectors[:, 2]
+    modules_2d = np.sqrt(x**2 + y**2)
+    colatitud = np.arctan(modules_2d / z)
+    colatitud[np.isnan(colatitud)] == 0
+    colatitud[colatitud < 0] += np.pi
+    colatitud  = to_sexagesimal_3d(colatitud)
+    longitud   = to_sexagesimal_3d(np.arctan(y / x))
+    longitud[x < 0] += 180.
+    longitud[longitud < 0] += 360.
+    polar_vectors = np.zeros((num_data, 3))
+    polar_vectors[:, 0] = np.sqrt(x**2 + y**2 + z**2)
+    polar_vectors[:, 1] = colatitud
+    polar_vectors[:, 2] = longitud
+    return polar_vectors
+
 def vector_to_polar(vector_matrix):
-    vector_matrix = np.array(vector_matrix).T
-    num_data = vector_matrix.shape[0]
-    x = vector_matrix[:,0]
-    y = vector_matrix[:,1]
-    z = vector_matrix[:,2]
+    x, y, z = (*np.array(vector_matrix).T, )
+    num_data = x.size
     module2D  = np.sqrt(x**2 + y**2)
     colatitud = np.arctan(module2D / z)
     colatitud[np.isnan(colatitud)] = 0
@@ -50,8 +64,7 @@ def vector_to_polar(vector_matrix):
     longitud[np.isnan(longitud)] = 0
     longitud[x < 0] += 180
     longitud[longitud < 0] += 360
-
-    polar_vectors =[np.sqrt(x ** 2 + y ** 2 + z ** 2),
-                    colatitud,
-                    longitud]
+    polar_vectors = np.array([np.sqrt(x ** 2 + y ** 2 + z ** 2),
+                                colatitud,
+                                longitud])
     return polar_vectors
