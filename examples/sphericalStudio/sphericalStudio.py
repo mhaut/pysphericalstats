@@ -8,13 +8,13 @@ import PyQt5
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
-class MainWindow(QtWidgets.QMainWindow, Ui_Form):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
         self.sceneGrahics = PyQt5.QtWidgets.QGraphicsScene()
         self.graphicsView.setScene(self.sceneGrahics)
-        pySpDraw.DPIEXPORT = 90
+        pySpDraw.DPIEXPORT = 150
         #print(self.imageicono.geometry())
         #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
@@ -25,8 +25,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
         msg.setIcon(PyQt5.QtWidgets.QMessageBox.Information)
         msg.setText(typeSMS)
         msg.setInformativeText(info)
-        msg.setWindowTitle(typeSMS + " pyCircStudio")
+        msg.setWindowTitle(typeSMS + " pySpericalStudio")
         msg.exec_()
+
+    def resizeEvent(self, event):
+        bounds = self.sceneGrahics.itemsBoundingRect()
+        #bounds.setWidth(bounds.width()*0.9)
+        #bounds.setHeight(bounds.height()*0.9)
+         #IgnoreAspectRatio, KeepAspectRatio, KeepAspectRatioByExpanding
+        self.graphicsView.fitInView(bounds, QtCore.Qt.KeepAspectRatioByExpanding);
 
     def drawObject(self, objectReturn):
         if objectReturn != []:
@@ -34,7 +41,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_Form):
             self.graphicsView.items().clear()
             try:
                 canvas = FigureCanvas(objectReturn)
-                #canvas.setGeometry(0, 0, 500, 500)
+                canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
                 self.sceneGrahics.addWidget(canvas)
                 canvas = FigureCanvas(objectReturn)
                 self.sceneGrahics.addWidget(canvas)

@@ -86,14 +86,10 @@ def draw_axis_vectors(margin, head_ratio, ax):
 
 
 def draw_density_graph(dat, save_image=False):
-    # define 3d plot
-    fig = plt.figure(dpi=DPIEXPORT)
+    fig = plt.figure(dpi=DPIEXPORT, constrained_layout=True)
+    fig.tight_layout(rect=[0.1,0.1,0.9, 0.95])
     ax = fig.add_subplot(111, projection='3d')
-    #w = 80
-    #h = 80
-    # define 3d plot
-    # fig = plt.figure(frameon=False)
-    #fig.set_size_inches(w, h)
+    
     # calculate density fields
     mu, sigma = 0, 0.1
     x = np.array([row[3] for row in dat])
@@ -131,8 +127,12 @@ def draw_density_graph(dat, save_image=False):
     if save_image:
         export_image(fig)
         #plt.show()
-
+    plt.axis('off') # this rows the rectangular frame 
+    ax.get_xaxis().set_visible(False) # this removes the ticks and numbers for x axis
+    ax.get_yaxis().set_visible(False) # this removes the ticks and numbers for y axis
     return ax.get_figure()
+
+
 
 def draw_module_angle_distrib(dat, save_image=False):
     module = np.array([row[0] for row in dat])
@@ -142,9 +142,7 @@ def draw_module_angle_distrib(dat, save_image=False):
 
     coord_vectors = [x, y, z]
 
-    #mpl._get_configdir()
     R = np.math.sqrt((np.sum(x) * np.sum(x)) + (np.sum(y) * np.sum(y)) + (np.sum(z) * np.sum(z)))
-
     meanX = np.sum(x) / R
     meanY = np.sum(y) / R
     meanZ = np.sum(z) / R
@@ -169,14 +167,10 @@ def draw_module_angle_distrib(dat, save_image=False):
 
     Az = meanModule * np.math.cos(pySpCconvert.to_radian(meanDirection[0]))
 
-    #w = 80
-    #h = 80
-
-    # define 3d plot
-    fig = plt.figure(frameon=False, dpi=DPIEXPORT)
-    #fig.set_size_inches(w, h)
-
+    fig = plt.figure(dpi=DPIEXPORT, constrained_layout=True)
+    fig.tight_layout(rect=[0.1,0.1,0.9, 0.95])
     ax = fig.add_subplot(111, projection='3d')
+
     max_x = max(abs(x))
     max_y = max(abs(y))
     max_z = max(abs(z))
@@ -187,6 +181,9 @@ def draw_module_angle_distrib(dat, save_image=False):
 
 
     ax.quiver(0, 0, 0, x, y, z, arrow_length_ratio=0.01, linewidths=0.422)
+    #ax.set_xlim(np.array([max_absolute*-1, max_absolute])*0.5)
+    #ax.set_ylim(np.array([max_absolute*-1, max_absolute])*0.5)
+    #ax.set_zlim(np.array([max_absolute*-1, max_absolute])*0.5)
     ax.set_xlim(max_absolute*-1, max_absolute)
     ax.set_ylim(max_absolute*-1, max_absolute)
     ax.set_zlim(max_absolute*-1, max_absolute)
@@ -199,8 +196,9 @@ def draw_module_angle_distrib(dat, save_image=False):
 
     if save_image:
         export_image(fig)
-
     return ax.get_figure()
+
+
 
 
 def draw_vector_graph(dat, save_image=False):
@@ -215,7 +213,6 @@ def draw_vector_graph(dat, save_image=False):
 
     coord_vectors = [x, y, z]
 
-    #mpl._get_configdir()
     R = np.math.sqrt((np.sum(x) * np.sum(x)) + (np.sum(y) * np.sum(y)) + (np.sum(z) * np.sum(z)))
 
     meanX = np.sum(x) / R
@@ -226,7 +223,6 @@ def draw_vector_graph(dat, save_image=False):
     meanDirection = pySpMath.mean_direction(coord_vectors)
 
     if meanDirection[0] < 0:
-    #manager.window.showMaximized()
         meanDirection[0] = meanDirection[0] + 180
 
     if meanX < 0:
@@ -243,13 +239,10 @@ def draw_vector_graph(dat, save_image=False):
 
     Az = meanModule * np.math.cos(pySpCconvert.to_radian(meanDirection[0]))
 
-    #w = 80
-    #h = 80
 
     # define 3d plot
-    fig = plt.figure(frameon=False, dpi=DPIEXPORT)
-    #fig.set_size_inches(w, h)
-
+    fig = plt.figure(dpi=DPIEXPORT, constrained_layout=True)
+    fig.tight_layout(rect=[0.1,0.1,0.9, 0.95])
     ax = fig.add_subplot(111, projection='3d')
 
     max_x = max(abs(x))
@@ -269,24 +262,13 @@ def draw_vector_graph(dat, save_image=False):
     max_absolute = max(max_x, max_y, max_z, max_x1, max_y1, max_z1)
     min_value = min(min_x, min_y, min_z, min_x1, min_y1, min_z1)
 
-    # DrawUtil.draw_sphere(max_absolute*1.25, 0.08, 0, ax)
-    # DrawUtil.draw_axis_vectors(max_absolute*1.25, 0.05, ax)
-
-
     ax.quiver(x, y, z, x1, y1, z1, arrow_length_ratio=0.01, linewidths=0.422)
     ax.set_xlim(min_value, max_absolute)
     ax.set_ylim(min_value, max_absolute)
     ax.set_zlim(min_value, max_absolute)
-    #ax.set_aspect('equal')
-    # fig, ax = plt.subplots(num=None, figsize=(16, 12), dpi=80, facecolor='w', edgecolor='k')
 
-    #manager = plt.get_current_fig_manager()
-    #manager.window.showMaximized()
-    # plt.axis('off')
 
     if save_image:
         export_image(fig)
-
-    # plt.tight_layout()
 
     return ax.get_figure()
