@@ -1,0 +1,45 @@
+AllAngleStatistics      Calculation of All Statistics of the Angle.
+AllModuleStatistics3D   Calculation of All Statistics of the Modules.
+ArithmeticMean3D        Calculation of Mean Arithmetic modules.
+ConcentrationParameter3D
+                        Calculation of Von Mises concentration
+                        parameter of the angles.
+DrawDensity3D           Graphic representation of a point Density Map.
+DrawModuleAndAngleDistribution3D
+                        Graphic representation of Module and Angle
+                        Distribution.
+LoadData3D              Data loading and conversion of polar
+                        coordinates, rectangular coordinates, and
+                        measured and real coordinates.
+MaxValue3D              Calculation of the Maximum Value of the
+                        modules.
+MeanDirection3D         Calculation of the Mean Direction of the
+                        angles.
+MeanModule3D            Calculation of the Mean Module of the angles.
+MinValue3D              Calculation of the Minimum Value of the
+                        modules.
+ModulePopulationStandardDeviation3D
+                        Calculation of the Population Standard
+                        Deviation of the modules.
+ModulePopulationVariance3D
+                        Calculation of the Population Variance of the
+                        modules.
+ModuleStandardDeviation3D
+                        Calculation of the Standard Deviation of the
+                        modules.
+ModuleSum3D             Calculation of the Sum of the Modules.
+ModuleVariance3D        Calculation of the Variance of the modules.
+NumberOfElements3D      Calculation of the Number of Elements of the
+                        modules.
+Pause                   Function Pause
+Range3D                 Calculation of the Range of the modules.
+RayleighTest3D          Rayleigh Test. Formal test of uniformity.
+SphericalStandardError3D
+                        Calculation of the Standard Error of the
+                        angles.
+StandardError3D         Calculation of the Standard Error of the
+                        modules.
+VecStatGraphs3D-package
+                        Vector analysis using graphical and analytical
+                        methods in 3D.
+XYZcoor                 GPS Data Set
