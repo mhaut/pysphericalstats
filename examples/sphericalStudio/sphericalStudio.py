@@ -70,7 +70,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                         #pySpMath.getColumnAsArray(4, self.data),
                                         #pySpMath.getColumnAsArray(5, self.data))
                     self.modules     = self.data[:,0]
-                    self.coordinates = (self.data[:,3],self.data[:,4],self.data[:,5])
+                    self.coordinates = np.array([self.data[:,3], self.data[:,4],self.data[:,5]]).T
                     #self.coordinates =  (pySpMath.getColumnAsArray(3, self.data),
                                         #pySpMath.getColumnAsArray(4, self.data),
                                         #pySpMath.getColumnAsArray(5, self.data))

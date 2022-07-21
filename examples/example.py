@@ -15,6 +15,9 @@ def main():
     modules     = dat[:,0]
     coordinates = dat[:,3:6]
 
+
+    print(coordinates.shape)
+    exit()
     resultado = pySpMath.allmodulestatistics(modules)
     result    = pySpMath.allanglesstatistics(modules, coordinates)
 
