@@ -5,7 +5,7 @@ import pysphericalstats.fileIO as pySpFileIO
 import matplotlib.pyplot as plt
 from scipy import stats
 import os
-
+from mpl_toolkits.mplot3d import Axes3D
 
 DPIEXPORT = 81
 plt.style.use('default')

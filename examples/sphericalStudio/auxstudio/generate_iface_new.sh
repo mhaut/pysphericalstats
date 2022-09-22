@@ -1,1 +1,1 @@
-pyuic5 -x Sperical_Studio_Interface2.ui -o interface.py
+pyuic5 -x Sperical_Studio_Interface.ui -o interface.py
