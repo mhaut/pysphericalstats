@@ -4,13 +4,14 @@ import pysphericalstats.fileIO as pySpFileIO
 import pysphericalstats.convert as pySpConvert
 import pysphericalstats.math as pySpMath
 import pysphericalstats.draw as pySpDraw
+import pysphericalstats.mouseEventQt as pyCmouseEvent
 import PyQt5
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
-class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self, *args, **kwargs):
-        QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
+        QtWidgets.QWidget.__init__(self, *args, **kwargs)
         self.setupUi(self)
         self.sceneGrahics = PyQt5.QtWidgets.QGraphicsScene()
         self.graphicsView.setScene(self.sceneGrahics)
@@ -19,14 +20,55 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
         self.calculate.clicked.connect(self.exec_func)
+        self.type3D1.setEnabled(True)
+        self.type3D2.setEnabled(True)
+        self.type3D3.setEnabled(True)
+        self.buttonload.setEnabled(True)
+        self.buttonmap.setEnabled(False)
+        self.Map.setEnabled(False)
+        self.comboBoxSource1.setEnabled(False)
+        self.comboBoxSource2.setEnabled(False)
+        self.labelX.setEnabled(False)
+        self.labelY.setEnabled(False)
+        handler = pyCmouseEvent.mouseEvent(self.graphicsView)
+        self.graphicsView.installEventFilter(handler)
+        handler.mousePressed.connect(lambda event: self.mousePressEvent(event, 1))
+        self.graphicsView.setMouseTracking(True)
+
+    def mousePressEvent(self, event, posMouse=None):
+        if posMouse == 1: self.save_data2pc()
+
 
     def show_message(self, typeSMS, info):
-        msg = PyQt5.QtWidgets.QMessageBox()
-        msg.setIcon(PyQt5.QtWidgets.QMessageBox.Information)
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setText(typeSMS)
         msg.setInformativeText(info)
-        msg.setWindowTitle(typeSMS + " pySpericalStudio")
+        msg.setWindowTitle(typeSMS + " pySphericalStats")
         msg.exec_()
+
+
+    def save_data2pc(self):
+        if self.show_image * self.show_text: return
+        if self.show_image:
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self,self.tr("Export to PNG"), "image", self.tr("PNG image (*.png)"))
+            if fileName[0] != "":
+                rect = self.sceneGrahics.itemsBoundingRect()
+                pixmap = QtGui.QPixmap(int(rect.width()), int(rect.height()))
+                painter = QtGui.QPainter(pixmap)
+                self.sceneGrahics.render(painter, rect)
+                del painter
+                pixmap.save(str(fileName[0]) + '.png')
+            else:
+                pass
+        else: # text
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self,self.tr("Export to TXT"), "info", self.tr("TXT file (*.txt)"))
+            if fileName[0] != "":
+                text_file = open(str(fileName[0]) + '.txt', 'w')
+                text_file.write(self.sceneGrahics.items()[0].toPlainText())
+                text_file.close()
+            else:
+                pass
 
     def resizeEvent(self, event):
         bounds = self.sceneGrahics.itemsBoundingRect()
@@ -35,18 +77,45 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
          #IgnoreAspectRatio, KeepAspectRatio, KeepAspectRatioByExpanding
         self.graphicsView.fitInView(bounds, QtCore.Qt.KeepAspectRatioByExpanding);
 
+    #def drawObject(self, objectReturn):
+        #if objectReturn != []:
+            #self.sceneGrahics.clear()
+            #self.graphicsView.items().clear()
+            #try:
+                #canvas = FigureCanvas(objectReturn)
+                #canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
+                #self.sceneGrahics.addWidget(canvas)
+                ##canvas = FigureCanvas(objectReturn)
+                ##self.sceneGrahics.addWidget(canvas)
+            #except: # its text
+                #self.sceneGrahics.addText(str(objectReturn), QtGui.QFont('Arial Black', 15, QtGui.QFont.Light))
+            #self.resizeEvent(None)
+        #else:
+            #self.showMessageInView("ERROR: No information wind in region")
+
     def drawObject(self, objectReturn):
         if objectReturn != []:
             self.sceneGrahics.clear()
-            self.graphicsView.items().clear()
+            #self.graphicsView.setScene(self.sceneGrahics)
+            #self.graphicsView.items().clear()
             try:
                 canvas = FigureCanvas(objectReturn)
-                canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
-                self.sceneGrahics.addWidget(canvas)
-                #canvas = FigureCanvas(objectReturn)
-                #self.sceneGrahics.addWidget(canvas)
+                #canvas.setGeometry(0, 0, 500, 500)
+                canvas.draw()
+                size = canvas.size()
+                width, height = size.width(), size.height()
+                item = QtGui.QPixmap(QtGui.QImage(canvas.buffer_rgba(), width, height, QtGui.QImage.Format_ARGB32).rgbSwapped())
+                self.sceneGrahics = QtWidgets.QGraphicsScene()
+                self.sceneGrahics.addPixmap(item)
+                self.graphicsView.setScene(self.sceneGrahics)
+                self.sceneGrahics.update()
+                self.show_image = True
+                self.show_text  = False
             except: # its text
                 self.sceneGrahics.addText(str(objectReturn), QtGui.QFont('Arial Black', 15, QtGui.QFont.Light))
+                self.show_image = False
+                self.show_text  = True
+
             self.resizeEvent(None)
         else:
             self.showMessageInView("ERROR: No information wind in region")
@@ -57,10 +126,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         fpath = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 
             '../../datasets',"Image files (*.txt)")[0]
         if fpath:
-            if self.type3D.isChecked() == False:
+            if self.type3D1.isChecked() == False:
                 self.show_message("ERROR", "select type")
             else:
-                #try:
+                try:
                     vectorsMatrix    = pySpFileIO.read_file(fpath)
                     self.data        = pySpFileIO.load_data(vectorsMatrix)
                     #print(self.data.shape)
@@ -78,8 +147,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     fname = fpath.split("/")[-1]
                     self.labelpath.setText(fname)
                     self.calculate.setEnabled(True)
-                #except:
-                    #self.show_message("ERROR", "invalid text format")
+                except:
+                    self.show_message("ERROR", "invalid text format")
 
     # cada radiobuton
     def exec_func(self):
