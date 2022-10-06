@@ -20,6 +20,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         #self.imageicono.setPixmap(QtGui.QPixmap('../images/logo.png').scaled(202,191, QtCore.Qt.KeepAspectRatio))
         self.buttonload.clicked.connect(self.load_data)
         self.calculate.clicked.connect(self.exec_func)
+        self.savedata.clicked.connect(self.save_data2pc)
         self.type3D1.setEnabled(True)
         self.type3D2.setEnabled(True)
         self.type3D3.setEnabled(True)
@@ -30,14 +31,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         self.comboBoxSource2.setEnabled(False)
         self.labelX.setEnabled(False)
         self.labelY.setEnabled(False)
-        handler = pyCmouseEvent.mouseEvent(self.graphicsView)
-        self.graphicsView.installEventFilter(handler)
-        handler.mousePressed.connect(lambda event: self.mousePressEvent(event, 1))
-        self.graphicsView.setMouseTracking(True)
-
-    def mousePressEvent(self, event, posMouse=None):
-        if posMouse == 1: self.save_data2pc()
-
+        
 
     def show_message(self, typeSMS, info):
         msg = QtWidgets.QMessageBox()
@@ -53,11 +47,10 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
         if self.show_image:
             fileName = QtWidgets.QFileDialog.getSaveFileName(self,self.tr("Export to PNG"), "image", self.tr("PNG image (*.png)"))
             if fileName[0] != "":
-                rect = self.sceneGrahics.itemsBoundingRect()
+                size = self.canvas.size()
+                width, height = size.width(), size.height()
+                rect = QtGui.QPixmap(QtGui.QImage(self.canvas.buffer_rgba(), width, height, QtGui.QImage.Format_ARGB32).rgbSwapped())
                 pixmap = QtGui.QPixmap(int(rect.width()), int(rect.height()))
-                painter = QtGui.QPainter(pixmap)
-                self.sceneGrahics.render(painter, rect)
-                del painter
                 pixmap.save(str(fileName[0]) + '.png')
             else:
                 pass
@@ -77,21 +70,6 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
          #IgnoreAspectRatio, KeepAspectRatio, KeepAspectRatioByExpanding
         self.graphicsView.fitInView(bounds, QtCore.Qt.KeepAspectRatioByExpanding);
 
-    #def drawObject(self, objectReturn):
-        #if objectReturn != []:
-            #self.sceneGrahics.clear()
-            #self.graphicsView.items().clear()
-            #try:
-                #canvas = FigureCanvas(objectReturn)
-                #canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
-                #self.sceneGrahics.addWidget(canvas)
-                ##canvas = FigureCanvas(objectReturn)
-                ##self.sceneGrahics.addWidget(canvas)
-            #except: # its text
-                #self.sceneGrahics.addText(str(objectReturn), QtGui.QFont('Arial Black', 15, QtGui.QFont.Light))
-            #self.resizeEvent(None)
-        #else:
-            #self.showMessageInView("ERROR: No information wind in region")
 
     def drawObject(self, objectReturn):
         if objectReturn != []:
@@ -99,16 +77,9 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             #self.graphicsView.setScene(self.sceneGrahics)
             #self.graphicsView.items().clear()
             try:
-                canvas = FigureCanvas(objectReturn)
-                #canvas.setGeometry(0, 0, 500, 500)
-                canvas.draw()
-                size = canvas.size()
-                width, height = size.width(), size.height()
-                item = QtGui.QPixmap(QtGui.QImage(canvas.buffer_rgba(), width, height, QtGui.QImage.Format_ARGB32).rgbSwapped())
-                self.sceneGrahics = QtWidgets.QGraphicsScene()
-                self.sceneGrahics.addPixmap(item)
-                self.graphicsView.setScene(self.sceneGrahics)
-                self.sceneGrahics.update()
+                self.canvas = FigureCanvas(objectReturn)
+                self.canvas.setGeometry(0, 0, self.graphicsView.width(), self.graphicsView.height())
+                self.sceneGrahics.addWidget(self.canvas)
                 self.show_image = True
                 self.show_text  = False
             except: # its text

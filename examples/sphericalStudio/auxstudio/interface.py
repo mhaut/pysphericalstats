@@ -122,6 +122,9 @@ class Ui_Form(object):
         self.calculate.setEnabled(False)
         self.calculate.setObjectName("calculate")
         self.verticalLayout_5.addWidget(self.calculate)
+        self.savedata = QtWidgets.QPushButton(self.layoutWidget1)
+        self.savedata.setObjectName("savedata")
+        self.verticalLayout_5.addWidget(self.savedata)
         self.layoutWidget2 = QtWidgets.QWidget(self.splitter_3)
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.layoutWidget2)
@@ -173,6 +176,7 @@ class Ui_Form(object):
         self.buttonload.setText(_translate("Form", "Select file"))
         self.buttonmap.setText(_translate("Form", "Load Map"))
         self.calculate.setText(_translate("Form", "Calculate"))
+        self.savedata.setText(_translate("Form", "Save Data"))
         self.Files.setText(_translate("Form", "Files"))
         self.Map.setText(_translate("Form", "Map"))
 

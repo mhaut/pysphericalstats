@@ -212,6 +212,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="savedata">
+           <property name="text">
+            <string>Save Data</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="layoutWidget">
