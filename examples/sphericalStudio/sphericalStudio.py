@@ -122,6 +122,7 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
 
     # cada radiobuton
     def exec_func(self):
+        self.savedata.setEnabled(True)
         if self.densityGraph.isChecked():
             self.drawdensityGraph() 
         elif self.angledistribution.isChecked():
@@ -132,6 +133,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
             self.modulestats()
         elif self.angstats.isChecked():
             self.anglestats()
+        else:
+            self.savedata.setEnabled(False)
 
     def drawdensityGraph(self):
         figure = pySpDraw.draw_density_graph(self.data)
