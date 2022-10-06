@@ -4,7 +4,6 @@ import pysphericalstats.fileIO as pySpFileIO
 import pysphericalstats.convert as pySpConvert
 import pysphericalstats.math as pySpMath
 import pysphericalstats.draw as pySpDraw
-import pysphericalstats.mouseEventQt as pyCmouseEvent
 import PyQt5
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
